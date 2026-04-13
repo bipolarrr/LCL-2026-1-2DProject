@@ -1,0 +1,72 @@
+{
+  // Claude Code 권한 설정 예시 파일 (실제 적용은 settings.local.json 사용)
+  //
+  // 기본 방침:
+  //   - allow  : 확인 없이 자동 허용
+  //   - deny   : 확인 요청도 불가, 완전 차단
+  //   - 목록 미등재 : 실행 전 매번 사용자 확인 프롬프트 발생
+  //
+  // 온라인 업로드(git push, gh pr 등)나 포스푸시처럼
+  // 외부에 영향을 주는 행위는 목록에 넣지 않아 항상 확인을 받도록 함.
+
+  "permissions": {
+    "allow": [
+
+      // Claude Code 기본 파일 도구 — 읽기/쓰기/편집/탐색 자유 허용
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep",
+
+      // 파일 시스템 조작 — 생성/복사/이동/조회 허용 (삭제 계열은 미포함)
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(diff:*)",
+
+      // .NET CLI — 빌드/테스트 등 dotnet 명령 허용
+      "Bash(dotnet:*)",
+
+      // 비파괴적 git 커맨드 전부 허용
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git stash:*)",
+      "Bash(git merge:*)",
+      "Bash(git rebase:*)",
+      "Bash(git checkout:*)",
+      "Bash(git switch:*)",
+      "Bash(git init:*)",
+      "Bash(git fetch:*)",
+      "Bash(git tag:*)",
+      "Bash(git show:*)",
+      "Bash(git blame:*)",
+
+      // 웹 접근 — GitHub raw 파일 조회 및 일반 검색/fetch 허용
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebSearch",
+      "WebFetch"
+
+    ],
+    "deny": [
+
+      // 로컬 파일을 복구 불가능하게 삭제 — 완전 차단
+      "Bash(rm -rf:*)",
+
+      // 로컬 커밋/작업 내역을 되돌릴 수 없게 날려버리는 git 명령 — 완전 차단
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)"
+
+    ]
+  }
+}
