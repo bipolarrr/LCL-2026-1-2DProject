@@ -1,8 +1,28 @@
-1. 2D 플랫포머 게임
-2. 일반적인 플랫폼, 기믹이 있는 플랫폼, 아이템, 상태 이상등을 구현할 수 있어야 함.
-3. 여러명의 사람의 협업임.
-4. 예측하지 못할 물리적 연산 결과나 프레임레이트에 따른 다른 동작이 일어나는 일을 막아야 함. DeltaTime 기반의 연산을 Update()에서 하고, FixedUpdate와 같은 메소드의 활용을 굳이 자제하지 않아도 됨.
-5. 모든 다른 사람의 개발한 요소가 인터페이스를 통해 소통하여야 함. 말인즉, Item관련 메소드에서 Player.isPoisoned()와 같은 직접적 수정을 하는 코드를 적을 일이 없어야 함.
-6. 확장성이 너무 저해되어 있으면 안됨. 누군가가 막 공통 유틸리티를 건드려서 게임을 망치면 안되지만, 나는 새 기능 / 너무 새로운 기믹등의 추가를 위해 더 건들 여지가 남아있어야 함.
-7. 유니티의 관례적인 부분을 제외하고 헝가리안 표기법은 자제할 것
-8. RolePerPerson.md를 기반으로 "특정 사람이 건드려야 하는 폴더"의 밖으로 벗어나기 힘든 파일 구조를 만들 것.
+# Game Specification
+
+2D platformer with platforms, gimmicks, items, status effects.
+
+## Collaboration
+
+Multi-person team. Each person works within assigned folders only. See `RolePerPerson.md`.
+
+## Technical Constraints
+
+- DeltaTime-based in Update(). FixedUpdate allowed when appropriate.
+- No frame-rate-dependent physics results.
+
+## Communication Rule
+
+All cross-system interaction through interfaces. No direct field modification across boundaries.
+- Forbidden: `Player.isPoisoned = true` from Item script.
+- Correct: call interface method Player implements.
+
+## Extensibility
+
+- Lead dev extends Core interfaces + framework.
+- Other members' work must not require modifying shared utilities.
+- Folder-based isolation per team role.
+
+## Naming
+
+No Hungarian notation. Unity `m_` for serialized fields OK.

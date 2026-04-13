@@ -21,6 +21,7 @@ public class EnemyContactDamage : MonoBehaviour
 
         damageable.TakeDamage(contactDamage);
 
+        // Knockback direction: away from enemy + upward bias (0.5f) so target arcs upward
         Vector2 knockDir = (collision.transform.position - transform.position).normalized;
         knockDir.y = 0.5f;
         damageable.ApplyKnockback(knockDir.normalized * knockbackForce);

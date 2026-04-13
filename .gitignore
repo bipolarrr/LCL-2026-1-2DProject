@@ -3,10 +3,10 @@
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
 .utmp/
-CLAUDE.md
-DISCORD_AGENT_DOCS_SESSION.md
-DISCORD_AGENT_INSTALL_SESSION.md
-DISCORD_CODING_RULES_SESSION.md
+# Markdown: ignore all except README and ExamplePrompts
+*.md
+!README.md
+!ExamplePrompts/**/*.md
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
