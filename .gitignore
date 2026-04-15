@@ -4,6 +4,7 @@
 #
 .utmp/
 .claude/
+.vscode/
 # Markdown: ignore all except README and ExamplePrompts
 *.md
 !README.md
