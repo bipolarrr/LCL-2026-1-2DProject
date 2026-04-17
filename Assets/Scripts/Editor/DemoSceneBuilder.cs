@@ -48,16 +48,21 @@ public static class DemoSceneBuilder
         DestroyIfExists("Platform");
         DestroyIfExists("Player");
         DestroyIfExists("Enemy");
+        DestroyIfExists("EnemyLaser");
         DestroyIfExists("Coin");
         DestroyIfExists("GameManager");
         DestroyIfExists("BouncePad");
+        DestroyIfExists("WallLeft");
+        DestroyIfExists("WallRight");
 
         // --- Build ---
         CreateGround(square, groundLayer);
+        CreateWalls(square, groundLayer);
         CreatePlatform(square, groundLayer);
         CreateBouncePad(square, groundLayer);
         CreatePlayer(square, groundLayer);
         CreateEnemy(circle);
+        CreateEnemyLaser(circle, groundLayer);
         CreateCoin(square);
         CreateGameManager();
 
@@ -117,6 +122,7 @@ public static class DemoSceneBuilder
     private static void CreatePlayer(Sprite sprite, int groundLayer)
     {
         GameObject go = CreateSpriteObject("Player", sprite, new Vector3(-5f, -1.5f, 0f));
+        go.tag = "Player";
 
         // Rigidbody2D
         Rigidbody2D rb = go.AddComponent<Rigidbody2D>();
@@ -202,6 +208,56 @@ public static class DemoSceneBuilder
         go.AddComponent<CircleCollider2D>();
         go.AddComponent<EnemyPatrol>();
         go.AddComponent<EnemyContactDamage>();
+    }
+
+    // ================================================================
+    //  Walls  — 좌(-10, 0) 우(10, 0)  1×6  회색
+    //  Ground 레이어 사용 → EnemyLaserBeam이 wallLayers로 감지
+    // ================================================================
+    private static void CreateWalls(Sprite sprite, int layer)
+    {
+        foreach (float x in new[] { -10f, 10f })
+        {
+            string name = x < 0 ? "WallLeft" : "WallRight";
+            GameObject go = CreateSpriteObject(name, sprite, new Vector3(x, 0f, 0f));
+            go.transform.localScale = new Vector3(1f, 6f, 1f);
+            go.layer = layer;
+            SetColor(go, HexColor("555555"));
+            go.AddComponent<BoxCollider2D>();
+        }
+    }
+
+    // ================================================================
+    //  EnemyLaser  — (5, -1.5)  1×1  빨간 원
+    //  + Rigidbody2D, CircleCollider2D, LineRenderer
+    //  + EnemyLaserBeam, EnemyLaserController
+    //  transform.right(+X) 방향으로 발사 → 오른쪽 벽에 도달
+    // ================================================================
+    private static void CreateEnemyLaser(Sprite sprite, int groundLayer)
+    {
+        GameObject go = CreateSpriteObject("EnemyLaser", sprite, new Vector3(5f, -1.5f, 0f));
+
+        SetColor(go, Color.red);
+
+        Rigidbody2D rb = go.AddComponent<Rigidbody2D>();
+        rb.gravityScale = 3f;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+        go.AddComponent<CircleCollider2D>();
+        go.AddComponent<EnemyPatrol>();
+        go.AddComponent<EnemyFaceMovementDirection>();
+
+        LineRenderer lr = go.AddComponent<LineRenderer>();
+        lr.startColor = Color.red;
+        lr.endColor = Color.red;
+
+        go.AddComponent<EnemyLaserBeam>();
+        go.AddComponent<EnemyLaserController>();
+
+        // wallLayers를 Ground 레이어로 연결
+        SerializedObject beamSo = new SerializedObject(go.GetComponent<EnemyLaserBeam>());
+        beamSo.FindProperty("wallLayers").intValue = 1 << groundLayer;
+        beamSo.ApplyModifiedProperties();
     }
 
     // ================================================================
