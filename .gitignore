@@ -103,3 +103,10 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# Claude Code - 작업자별 로컬 설정 (커밋 금지)
+CLAUDE.md
+CLAUDE.md.meta
+**/CLAUDE.md
+**/CLAUDE.md.meta
+prompt.md
