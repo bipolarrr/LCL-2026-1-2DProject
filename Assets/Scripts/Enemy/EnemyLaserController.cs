@@ -1,10 +1,12 @@
 using UnityEngine;
 
+/// <summary>
+/// 공격 on/off 루프와 플레이어 감지 범위만 담당하는 타이밍 컨트롤러.
+/// 구체 공격 구현(레이저/미사일/폭탄 등)은 IAttackBehavior 로 분리되어 있어
+/// 같은 GameObject에 IAttackBehavior 를 구현한 어떤 공격 컴포넌트가 붙어 있어도 동작한다.
+/// </summary>
 public class EnemyLaserController : MonoBehaviour
 {
-    [Header("레이저")]
-    [SerializeField] private EnemyLaserBeam laserBeam;
-
     [Header("타이밍")]
     [SerializeField] private float laserOnDuration = 2f;
     [SerializeField] private float laserOffDuration = 1.5f;
@@ -15,11 +17,17 @@ public class EnemyLaserController : MonoBehaviour
     private float _timer;
     private bool _laserOn;
     private Transform _player;
+    private IAttackBehavior _attack;
 
     private void Start()
     {
-        if (laserBeam == null)
-            laserBeam = GetComponent<EnemyLaserBeam>();
+        _attack = GetComponent<IAttackBehavior>();
+        if (_attack == null)
+        {
+            Debug.LogWarning(
+                $"[{nameof(EnemyLaserController)}] IAttackBehavior 구현 컴포넌트가 없습니다. 공격이 동작하지 않습니다. ({name})",
+                this);
+        }
 
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
@@ -27,7 +35,7 @@ public class EnemyLaserController : MonoBehaviour
 
         _laserOn = false;
         _timer = laserOffDuration;
-        laserBeam?.Deactivate();
+        _attack?.EndAttack();
     }
 
     private void Update()
@@ -37,7 +45,7 @@ public class EnemyLaserController : MonoBehaviour
             if (_laserOn)
             {
                 _laserOn = false;
-                laserBeam?.Deactivate();
+                _attack?.EndAttack();
             }
             _timer = laserOffDuration;
             return;
@@ -48,8 +56,8 @@ public class EnemyLaserController : MonoBehaviour
         {
             _laserOn = !_laserOn;
             _timer = _laserOn ? laserOnDuration : laserOffDuration;
-            if (_laserOn) laserBeam?.Activate();
-            else laserBeam?.Deactivate();
+            if (_laserOn) _attack?.BeginAttack();
+            else _attack?.EndAttack();
         }
     }
 

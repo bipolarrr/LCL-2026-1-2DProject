@@ -1,7 +1,12 @@
 using UnityEngine;
 
+/// <summary>
+/// 차징→발사 2단계 레이저 공격 구현.
+/// IAttackBehavior 를 통해 상위 컨트롤러가 구체 타입을 모르고도 개시/취소한다.
+/// 방향은 IFacingProvider 로 주입받으며, 없으면 transform.right 로 폴백한다.
+/// </summary>
 [RequireComponent(typeof(LineRenderer))]
-public class EnemyLaserBeam : MonoBehaviour
+public class EnemyLaserBeam : MonoBehaviour, IAttackBehavior
 {
     [Header("데미지")]
     [SerializeField] private float damagePerSecond = 10f;
@@ -70,14 +75,14 @@ public class EnemyLaserBeam : MonoBehaviour
         }
     }
 
-    public void Activate()
+    public void BeginAttack()
     {
         _state = State.Charging;
         _chargeTimer = chargeDuration;
         _lr.enabled = true;
     }
 
-    public void Deactivate()
+    public void EndAttack()
     {
         _state = State.Idle;
         _lr.enabled = false;
