@@ -117,7 +117,6 @@ public static class DemoSceneBuilder
     //  Player  — (-5, -1.5)  1×1  흰색
     //  + Rigidbody2D, BoxCollider2D
     //  + PlayerInputReader, PlayerMotor, PlayerHealth, PlayerController
-    //  + 자식: GroundCheck
     // ================================================================
     private static void CreatePlayer(Sprite sprite, int groundLayer)
     {
@@ -139,16 +138,12 @@ public static class DemoSceneBuilder
         go.AddComponent<PlayerHealth>();
         go.AddComponent<PlayerController>();
 
-        // GroundCheck 자식
-        GameObject groundCheck = new GameObject("GroundCheck");
-        Undo.RegisterCreatedObjectUndo(groundCheck, "Create GroundCheck");
-        groundCheck.transform.SetParent(go.transform);
-        groundCheck.transform.localPosition = new Vector3(0f, -0.55f, 0f);
-
-        // PlayerMotor에 GroundCheck, GroundLayer 연결
+        // PlayerMotor에 GroundLayer / WallLayer 연결
+        // (Cast 기반 IsGrounded/Wall Check 사용 — 별도 GroundCheck Transform 불필요)
         SerializedObject motorSo = new SerializedObject(go.GetComponent<PlayerMotor>());
-        motorSo.FindProperty("groundCheck").objectReferenceValue = groundCheck.transform;
-        motorSo.FindProperty("groundLayer").intValue = 1 << groundLayer;
+        int layerMask = 1 << groundLayer;
+        motorSo.FindProperty("groundLayer").intValue = layerMask;
+        motorSo.FindProperty("wallLayer").intValue = layerMask;
         motorSo.ApplyModifiedProperties();
 
         // PlayerInputReader에 InputAction 연결
