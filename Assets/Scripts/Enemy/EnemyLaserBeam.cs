@@ -25,7 +25,7 @@ public class EnemyLaserBeam : MonoBehaviour
 
     private LineRenderer _lr;
     private GameObject _hitEffectInstance;
-    private EnemyFaceMovementDirection _faceDir;
+    private IFacingProvider _facing;
     private State _state;
     private float _chargeTimer;
     private Vector2 _laserEnd;
@@ -33,7 +33,7 @@ public class EnemyLaserBeam : MonoBehaviour
     private void Awake()
     {
         _lr = GetComponent<LineRenderer>();
-        _faceDir = GetComponent<EnemyFaceMovementDirection>();
+        _facing = GetComponent<IFacingProvider>();
         _lr.positionCount = 2;
         _lr.useWorldSpace = true;
         _lr.enabled = false;
@@ -93,7 +93,7 @@ public class EnemyLaserBeam : MonoBehaviour
     private void UpdateLaserLine()
     {
         Vector2 origin = firePoint != null ? (Vector2)firePoint.position : (Vector2)transform.position;
-        Vector2 dir = _faceDir != null ? _faceDir.FacingDirection : (Vector2)transform.right;
+        Vector2 dir = _facing != null ? _facing.FacingDirection : (Vector2)transform.right;
 
         RaycastHit2D wallHit = Physics2D.Raycast(origin, dir, Mathf.Infinity, wallLayers);
         _laserEnd = wallHit.collider != null ? wallHit.point : origin + dir * 100f;
@@ -113,7 +113,7 @@ public class EnemyLaserBeam : MonoBehaviour
     private void DealDamage()
     {
         Vector2 origin = firePoint != null ? (Vector2)firePoint.position : (Vector2)transform.position;
-        Vector2 dir = _faceDir != null ? _faceDir.FacingDirection : (Vector2)transform.right;
+        Vector2 dir = _facing != null ? _facing.FacingDirection : (Vector2)transform.right;
         float length = Vector2.Distance(origin, _laserEnd);
 
         Vector2 center = origin + dir * (length * 0.5f);

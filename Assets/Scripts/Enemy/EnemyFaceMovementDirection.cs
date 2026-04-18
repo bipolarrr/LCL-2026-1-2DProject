@@ -1,7 +1,11 @@
 using UnityEngine;
 
+/// <summary>
+/// Rigidbody2D.linearVelocity.x 부호를 따라 좌/우 바라보는 방향을 갱신한다.
+/// IFacingProvider 구현 — 소비자(레이저 등)는 구체 클래스를 몰라도 된다.
+/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
-public class EnemyFaceMovementDirection : MonoBehaviour
+public class EnemyFaceMovementDirection : MonoBehaviour, IFacingProvider
 {
     public Vector2 FacingDirection { get; private set; } = Vector2.right;
 
