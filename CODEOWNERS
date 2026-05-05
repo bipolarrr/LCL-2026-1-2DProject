@@ -1,0 +1,31 @@
+# Repository governance
+/AGENTS.md @lead
+/CODEOWNERS @lead
+/docs/agent/ @lead
+/scripts/ @lead
+
+# Lead-owned runtime contracts and core systems
+/Assets/Scripts/Runtime/Core/ @lead
+/Assets/Scripts/Runtime/Player/ @lead
+/Assets/Scripts/Runtime/Shared/ @lead
+/Assets/Scripts/Editor/SceneBuilders/ @lead
+
+# Contributor-owned module areas
+/Assets/Scripts/Runtime/UI/ @ui
+/Assets/Prefabs/UI/ @ui
+
+/Assets/Scripts/Runtime/Enemy/ @enemy
+/Assets/ScriptableObjects/Enemy/ @enemy
+/Assets/Prefabs/Enemy/ @enemy
+
+/Assets/Scripts/Runtime/Items/ @items
+/Assets/Prefabs/Items/ @items
+
+/Assets/Scripts/Runtime/MapGimmicks/ @mapgimmicks
+/Assets/Prefabs/MapGimmicks/ @mapgimmicks
+
+# Unity project configuration and generated state
+/Packages/ @lead
+/ProjectSettings/ @lead
+/UserSettings/ @lead
+/Library/ @lead
